@@ -5,10 +5,21 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - main
+
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select the test environment"
+        required: true
+        type: choice
+        default: QA
+        options:
+          - QA
+          - Staging
 
 jobs:
   api-tests:
@@ -26,11 +37,19 @@ jobs:
       - name: Install Newman
         run: npm install -g newman newman-reporter-htmlextra
 
+      - name: Select Environment
+        run: |
+          if [ "${{ inputs.environment }}" = "Staging" ]; then
+            echo "ENV_FILE=Staging_Environment.postman_environment.json" >> $GITHUB_ENV
+          else
+            echo "ENV_FILE=QA_Environment.postman_environment.json" >> $GITHUB_ENV
+          fi
+
       - name: Run Postman API Tests
         run: |
           mkdir -p reports
           newman run collections/Postman_API_Automation.postman_collection.json \
-            -e environments/QA_Environment.postman_environment.json \
+            -e environments/$ENV_FILE \
             -r cli,htmlextra \
             --reporter-htmlextra-export reports/API_Test_Report.html
 
