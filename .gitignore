@@ -1,0 +1,5 @@
+# Generated test reports
+reports/
+
+# Sensitive environment files
+.env

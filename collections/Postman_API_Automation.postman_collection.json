@@ -1,0 +1,319 @@
+{
+  "info": {
+    "_postman_id": "2ab4fef8-6066-4e47-bf82-87416e3e0e22",
+    "name": "Postman_API_Automation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38977457"
+  },
+  "item": [
+    {
+      "name": "GET - Echo Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Validate response status code\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// Validate response time\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\n// Validate response content type\r\npm.test(\"Response is JSON\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\n// Validate response body\r\npm.test(\"Response contains URL\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response).to.have.property(\"url\");\r\n    pm.expect(response.url).to.include(\"postman-echo.com\");\r\n});\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/get",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "get"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Echo Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Validate status code\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// Validate response time\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\n// Validate employee name\r\npm.test(\"Employee name is correct\", function () {\r\n    pm.expect(response.json.employee_name).to.eql(\"Naufal\");\r\n});\r\n\r\n// Validate department\r\npm.test(\"Department is correct\", function () {\r\n    pm.expect(response.json.department).to.eql(\"Software QA\");\r\n});\r\n\r\n// Validate salary\r\npm.test(\"Salary is correct\", function () {\r\n    pm.expect(response.json.salary).to.eql(9000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"employee_name\": \"Naufal\",\r\n    \"department\": \"Software QA\",\r\n    \"salary\": 9000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/post",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Retrieve User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"User ID is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.id).to.eql(1);\r\n});\r\n\r\npm.test(\"User name is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.name).to.eql(\"Leanne Graham\");\r\n});\r\n\r\npm.test(\"Email is available\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.email).to.include(\"@\");\r\n});\r\n\r\n// Capture user ID from response\r\nconst response = pm.response.json();\r\n\r\npm.collectionVariables.set(\"user_id\", response.id);\r\n\r\nconsole.log(\"Captured User ID:\", pm.collectionVariables.get(\"user_id\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/1",
+          "protocol": "https",
+          "host": [
+            "jsonplaceholder",
+            "typicode",
+            "com"
+          ],
+          "path": [
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Retrieve User Dynamically",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"User ID matches captured ID\", function () {\r\n    const response = pm.response.json();\r\n    const expectedId = Number(\r\n        pm.collectionVariables.get(\"user_id\")\r\n    );\r\n\r\n    pm.expect(response.id).to.eql(expectedId);\r\n});\r\n\r\npm.test(\"User name is not empty\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Email format is valid\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.email).to.match(\r\n        /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/\r\n    );\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/{{user_id}}",
+          "protocol": "https",
+          "host": [
+            "jsonplaceholder",
+            "typicode",
+            "com"
+          ],
+          "path": [
+            "users",
+            "{{user_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - New Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Validate environment variable\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.args.name).to.eql(\r\n        pm.environment.get(\"test_name\")\r\n    );\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/get?name={{test_name}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "get"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "{{test_name}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Request Chaining",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.environment.set(\r\n    \"employee_id\",\r\n    response.args.employee_id\r\n);\r\n\r\npm.test(\"Employee ID extracted successfully\", function () {\r\n    pm.expect(pm.environment.get(\"employee_id\")).to.eql(\"101\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/get?employee_id=101",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "get"
+          ],
+          "query": [
+            {
+              "key": "employee_id",
+              "value": "101"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Verify Employee Id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.test(\"Verify dynamically passed Employee ID\", function () {\r\n    pm.expect(response.args.employee_id).to.eql(\r\n        pm.environment.get(\"employee_id\")\r\n    );\r\n});\r\n\r\npm.test(\"Verify response status code\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/get?employee_id={{employee_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "get"
+          ],
+          "query": [
+            {
+              "key": "employee_id",
+              "value": "{{employee_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.test(\"Employee created successfully\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Employee ID is generated\", function () {\r\n    pm.expect(response.id).to.exist;\r\n});\r\n\r\npm.environment.set(\"employee_id\", response.id);\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Anurag\",\r\n    \"job\": \"Dev Lead\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/users",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Verify Created Employee",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();\r\n\r\npm.test(\"Verify response status code\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Verify response is empty\", function () {\r\n    pm.response.to.have.body(\"{}\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/users/{{employee_id}}",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{employee_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "user_id",
+      "value": ""
+    }
+  ]
+}
