@@ -285,7 +285,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "const response = pm.response.json();\r\n\r\npm.test(\"Verify response status code\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Verify response is empty\", function () {\r\n    pm.response.to.have.body(\"{}\");\r\n});"
+              "const response = pm.response.json();\r\n\r\npm.test(\"Verify response status code to be 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Verify response is empty\", function () {\r\n    pm.response.to.have.body(\"{}\");\r\n});"
             ]
           }
         }
